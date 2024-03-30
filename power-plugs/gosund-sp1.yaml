@@ -30,6 +30,11 @@ logger:
 wifi:
   ap:
     ssid: '${devicename}'
+    manual_ip:
+      static_ip: 192.168.4.1
+      gateway: 192.168.4.1
+      subnet: 255.255.255.0
+
 
 captive_portal:
 
@@ -130,6 +135,8 @@ text_sensor:
 time:
   - platform: sntp
     id: sntp_time
+    name: "Geräteuhrzeit"
+    entity_category: 'diagnostic'
     timezone: Europe/Berlin
     servers:
       - 0.pool.ntp.org
