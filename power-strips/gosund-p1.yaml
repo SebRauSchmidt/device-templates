@@ -4,7 +4,8 @@ substitutions:
     contact_1_name: 'Steckdose 1'
     contact_2_name: 'Steckdose 2'
     contact_3_name: 'Steckdose 3'
-    reboot_timeout: '15min'
+    reboot_timeout: '15min' #Defines when the device reboots if no connection to its api was made, set 0s to disable auto reboot
+    contact_restore_mode: RESTORE_DEFAULT_OFF  #Defines if the contact restores from flash or the default state, see: https://esphome.io/components/switch/index.html
 
 ##############################################
 # General Settings
@@ -15,7 +16,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "Sebastian Schmidt.Gosund P1"
-    version: "0.1.0"
+    version: "0.2.0"
 
 esp8266:
   board: esp8285
@@ -105,16 +106,19 @@ switch:
     id: relay1
     pin:
       number: GPIO14
+    restore_mode: '${contact_restore_mode}'
   - platform: gpio
     name: '${contact_2_name}'
     id: relay2
     pin:
       number: GPIO12
+    restore_mode: '${contact_restore_mode}'
   - platform: gpio
     name: '${contact_3_name}'
     id: relay3
     pin:
       number: GPIO13
+    restore_mode: '${contact_restore_mode}'
   - platform: gpio
     name: 'USB'
     id: relay4
