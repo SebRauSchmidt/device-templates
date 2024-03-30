@@ -34,7 +34,7 @@ wifi:
 captive_portal:
 
 dashboard_import:
-  package_import_url: github://sebrauschmidt/device-templates/power-plugs/gosund-sp1.yaml
+  package_import_url: github://sebrauschmidt/device-templates/power-plugs/gosund-sp1.yaml@main
   import_full_config: false
 
 ##############################################
@@ -76,7 +76,7 @@ switch:
   - platform: template
     name: "Kindersicherung"
     id: child_lock
-    entity_category: configuration
+    entity_category: config
 
 sensor:
   - platform: hlw8012
@@ -132,5 +132,5 @@ time:
     id: sntp_time
     timezone: Europe/Berlin
     servers:
-      - 
       - 0.pool.ntp.org
+      - 1.pool.ntp.org
