@@ -2,6 +2,7 @@ substitutions:
     devicename: "gosund-sp1"
     friendly_name: 'Gosund SP1'
     contact_name: 'Schalter'
+    reboot_timeout: '15min'
 
 ##############################################
 # General Settings
@@ -11,7 +12,7 @@ esphome:
   friendly_name: ${friendly_name}
   name_add_mac_suffix: true
   project:
-    name: sebrauschmidt.device-templates
+    name: sebrauschmidt.gosund-sp1
     version: "0.2"
 
 esp8266:
@@ -19,11 +20,9 @@ esp8266:
   restore_from_flash: true
 
 api:
-#  encryption:
-#    key: !secret encryption_key
+  reboot_timeout: '${reboot_timeout}'
 
 ota:
-#  password: !secret ota_password
 
 logger:
   baud_rate: 0
@@ -50,7 +49,12 @@ binary_sensor:
       inverted: true
     id: powerbutton
     on_press:
-      - switch.toggle: relay
+      then:
+        - if:
+            condition:
+              switch.is_off: child_lock
+            then:
+              - switch.toggle: relay
 
 switch:
   - platform: gpio
@@ -68,6 +72,11 @@ switch:
       - switch.turn_on: led
     on_turn_off:
       - switch.turn_off: led
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: template
+    name: "Kindersicherung"
+    id: child_lock
+    entity_category: configuration
 
 sensor:
   - platform: hlw8012
@@ -119,5 +128,9 @@ text_sensor:
     name: 'ESPHome Version'
 
 time:
-  - platform: homeassistant
-    id: server_time
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Berlin
+    servers:
+      - 
+      - 0.pool.ntp.org
