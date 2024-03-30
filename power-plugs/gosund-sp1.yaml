@@ -1,5 +1,5 @@
 substitutions:
-    devicename: "gosund-sp1"
+    name: "gosund-sp1"
     friendly_name: 'Gosund SP1'
     contact_name: 'Schalter'
     reboot_timeout: '15min'
@@ -8,7 +8,7 @@ substitutions:
 # General Settings
 ##############################################
 esphome:
-  name: ${devicename}
+  name: ${name}
   friendly_name: ${friendly_name}
   name_add_mac_suffix: true
   project:
@@ -29,7 +29,7 @@ logger:
 
 wifi:
   ap:
-    ssid: '${devicename}'
+    ssid: '${name}'
     manual_ip:
       static_ip: 192.168.4.1
       gateway: 192.168.4.1
@@ -63,11 +63,12 @@ binary_sensor:
 
 switch:
   - platform: gpio
-    name: 'LED'
+    name: 'Status LED'
     id: led
     pin:
       number: GPIO1
       inverted: true
+    entity_category: 'config'
   - platform: gpio
     name: '${contact_name}'
     pin:
