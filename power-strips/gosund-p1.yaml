@@ -99,6 +99,7 @@ switch:
       number: GPIO2
       inverted: true
     restore_mode: RESTORE_DEFAULT_ON
+    entity_category: 'config'
   - platform: gpio
     name: '${contact_1_name}'
     id: relay1
