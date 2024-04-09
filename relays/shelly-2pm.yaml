@@ -1,0 +1,162 @@
+substitutions:
+  name: 'shelly-2pm'
+  friendly_name: 'Shelly 2PM'
+  contact_1_name: 'Kontakt 1'
+  contact_2_name: 'Kontakt 2'
+  reboot_timeout: '15min'
+
+##############################################
+# General Settings
+##############################################
+esphome:
+  name: '${name}'
+  friendly_name: '${friendly_name}'
+  name_add_mac_suffix: true
+  project:
+    name: "Sebastian Schmidt.Shelly 2PM"
+    version: "0.0.1"
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: arduino
+
+api:
+  reboot_timeout: '${reboot_timeout}'
+ota:
+
+logger:
+  baud_rate: 0
+
+wifi:
+  ap:
+    ssid: '${name}'
+    manual_ip:
+      static_ip: 192.168.4.1
+      gateway: 192.168.4.1
+      subnet: 255.255.255.0
+
+captive_portal:
+
+dashboard_import:
+  package_import_url: github://sebrauschmidt/device-templates/relays/shelly-2pm.yaml
+  import_full_config: false
+
+##############################################
+# Components
+##############################################
+i2c:
+  sda: GPIO26
+  scl: GPIO25
+
+switch:
+  - platform: gpio
+    name: '${contact_1_name}'
+    id: relay1
+    pin:
+      number: GPIO12
+  - platform: gpio
+    name: '${contact_2_name}'
+    id: relay2
+    pin:
+      number: GPIO13
+
+binary_sensor:
+  - platform: gpio
+    name: 'Button'
+    pin:
+      number: GPIO4
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+  - platform: gpio
+    name: 'Schalter 1'
+    pin:
+      number: GPIO5
+    filters:
+      - delayed_on_off: 50ms
+  - platform: gpio
+    name: 'Schalter 2'
+    pin:
+      number: GPIO18
+    filters:
+      - delayed_on_off: 50ms
+  
+sensor:
+  - platform: ade7953_i2c
+    irq_pin: GPIO27
+    voltage:
+      name: 'Spannung'
+    current_a:
+      name: '${contact_2_name} Strom'
+    active_power_a:
+      name: '${contact_2_name} Leistung'
+      id: watt_a
+      filters:
+        - multiply: -1
+    current_b:
+      name: '${contact_1_name} Strom'
+    active_power_b:
+      name: '${contact_1_name} Leistung'
+      id: watt_b
+  - platform: ntc
+    sensor: temp_resistance_reading
+    name: 'Gerätetemperatur'
+    unit_of_measurement: '°C'
+    accuracy_decimals: 1
+    icon: 'mdi:thermometer'
+    device_class: temperature
+    calibration:
+      b_constant: 3350
+      reference_resistance: 4.7kOhm
+      reference_temperature: 298.15K
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 5.6kOhm
+  - platform: adc
+    id: temp_analog_reading
+    pin:
+      number: GPIO35
+    attenuation: 11db
+
+  - platform: total_daily_energy
+    name: '${contact_2_name} Verbrauch'
+    power_id: watt_a
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
+  - platform: total_daily_energy
+    name: '${contact_1_name} Verbrauch'
+    power_id: watt_b
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
+
+  - platform: uptime
+    name: 'Laufzeit'
+    update_interval: 300s
+    entity_category: 'diagnostic'
+  - platform: wifi_signal
+    name: 'WiFi Signalstärke'
+    update_interval: 60s
+    entity_category: 'diagnostic'
+
+button:
+  - platform: restart
+    name: "Neustarten"
+
+text_sensor:
+  - platform: version
+    name: 'ESPHome Version'
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Berlin
+    servers:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+      - 2.pool.ntp.org
