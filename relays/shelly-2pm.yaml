@@ -76,6 +76,9 @@ binary_sensor:
       number: GPIO5
     filters:
       - delayed_on_off: 50ms
+    on_state:
+      then:
+        - switch.toggle: 'relay2'
   - platform: gpio
     name: 'Schalter 2'
     pin:
@@ -100,6 +103,8 @@ sensor:
     active_power_b:
       name: '${contact_1_name} Leistung'
       id: watt_b
+      filters:
+        - multiply: -1
   - platform: ntc
     sensor: temp_resistance_reading
     name: 'Gerätetemperatur'
