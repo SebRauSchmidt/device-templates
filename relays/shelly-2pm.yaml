@@ -78,13 +78,16 @@ binary_sensor:
       - delayed_on_off: 50ms
     on_state:
       then:
-        - switch.toggle: 'relay2'
+        - switch.toggle: 'relay1'
   - platform: gpio
     name: 'Schalter 2'
     pin:
       number: GPIO18
     filters:
       - delayed_on_off: 50ms
+    on_state:
+      then:
+        - switch.toggle: 'relay2'
   
 sensor:
   - platform: ade7953_i2c
