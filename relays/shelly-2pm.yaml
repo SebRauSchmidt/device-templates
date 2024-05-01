@@ -74,6 +74,7 @@ binary_sensor:
     name: 'Schalter 1'
     pin:
       number: GPIO5
+      inverted: true
     filters:
       - delayed_on_off: 50ms
     on_state:
