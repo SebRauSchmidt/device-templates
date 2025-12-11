@@ -25,7 +25,7 @@ esp8266:
 api:
   reboot_timeout: '${reboot_timeout}'
 ota:
-
+  platform: esphome
 logger:
   baud_rate: 0
 
