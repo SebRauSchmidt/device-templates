@@ -33,7 +33,11 @@ api:
       - switch.turn_on: relay_switch
   on_client_disconnected: 
     then:
-      - switch.turn_off: relay_switch
+      if:
+        condition:
+          binary_sensor.is_off: switch_input
+        then:
+          - switch.turn_off: relay_switch
 
 ota:
   - platform: esphome
@@ -144,7 +148,7 @@ binary_sensor:
               - switch.turn_off: relay_switch
 
     filters:
-      - delayed_on_off: 50ms      
+      - delayed_on_off: 50ms
   - platform: gpio
     name: "Knopf"
     pin: 
@@ -153,3 +157,8 @@ binary_sensor:
       mode:
         input: True
         pullup: True
+
+status_led:
+  pin:
+    number: 0
+    inverted: true
