@@ -4,7 +4,7 @@ substitutions:
   ip_address: ""
 
 dashboard_import:
-  package_import_url: https://git.sebschmidt.de/homeassistant/device-templates/raw/branch/main/sensors/ikea_vindriktning_esp32.yaml
+  package_import_url: github://sebrauschmidt/device-templates/sensors/ikea_vindriktning_esp32.yaml
   import_full_config: false
 
 esphome:
@@ -12,8 +12,8 @@ esphome:
   friendly_name: ${upper_devicename}
   name_add_mac_suffix: true
   project:
-    name: sebrauschmidt.ikea_vindriktning_esp32
-    version: "0.1"
+    name: Sebastian Schmidt-Eichler.ikea_vindriktning_esp32
+    version: "0.1.0"
 
 esp32:
   board: esp32dev
@@ -23,6 +23,7 @@ esp32:
 logger:
 
 api:
+  - platform: esphome
 
 ota:
 

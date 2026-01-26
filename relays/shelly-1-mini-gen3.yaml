@@ -1,0 +1,140 @@
+substitutions:
+  name: "shelly-1-mini-g3"
+  friendly_name: "Shelly 1 Mini Gen3"
+
+##########################################################
+# General settings                                       #
+##########################################################
+esphome:
+  name_add_mac_suffix: True
+  name: "${name}"
+  friendly_name: "${friendly_name}"
+  project:
+    name: "Sebastian Schmidt-Eichler.Shelly 1 Mini Gen 3"
+    version: "0.1.0"
+
+dashboard_import:
+  package_import_url: github://sebrauschmidt/device-templates/relays/shelly-1-mini-gen3.yaml
+  import_full_config: false
+
+esp32:
+  board: esp32-c3-devkitm-1
+  flash_size: 8MB
+  framework: 
+    type: esp-idf
+    version: recommended
+    sdkconfig_options: 
+      COMPILER_OPTIMIZATION_SIZE: y
+
+api:
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+
+logger:
+  level: ERROR
+
+wifi:
+  ap: 
+    ssid: '${name}'
+    manual_ip:
+      static_ip: 192.168.4.1
+      gateway: 192.168.4.1
+      subnet: 255.255.255.0
+
+captive_portal:
+  
+web_server:
+  port: 80
+  include_internal: True
+  ota: False
+  version: 3
+
+##########################################################
+# Components                                             #
+##########################################################
+
+sensor:
+  - platform: ntc
+    name: "Temperature"
+    sensor: temp_resistance_reading
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    icon: "mdi:thermometer"
+    calibration: 
+      b_constant: 3350
+      reference_resistance: 10kOhm
+      reference_temperature: 298.15K
+  - platform: resistance
+    id: temp_resistance_reading
+    sensor: temp_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 10kOhm
+  - platform: adc
+    id: temp_analog_reading
+    pin: GPIO03
+    attenuation: 12db
+  - platform: uptime
+    name: "Laufzeit"
+    update_interval: 60s
+    entity_category: "diagnostic"
+  - platform: wifi_signal
+    name: "WiFi Signalstärke"
+    update_interval: 60s
+    entity_category: "diagnostic"
+
+text_sensor:
+  - platform: version
+    name: "Version"
+    entity_category: "diagnostic"
+  - platform: wifi_info
+    ip_address:
+      name: "IP-Adresse"
+      address_0: 
+        name: "WiFi"
+    mac_address: 
+      name: "MAC-Adresse"
+    power_save_mode:
+      name: "Energiesparmodus"
+
+button:
+  - platform: restart
+    name: "Neustarten"
+    entity_category: "diagnostic"
+  - platform: safe_mode
+    name: "Neustarten (Safe Mode)"
+    entity_category: "diagnostic"
+
+output:
+  - platform: gpio
+    id: relay
+    pin: 7
+
+switch:
+  - platform: output
+    name: "Relais"
+    output: relay
+
+binary_sensor:
+  - platform: gpio
+    name: "Schalter"
+    pin: 10
+    on_state_change: 
+      if:
+        condition:
+          api.connected:
+            state_subscription_only: True
+        then:
+          - 
+
+    filters:
+      - delayed_on_off: 50ms      
+  - platform: gpio
+    name: "Knopf"
+    pin: 
+      number: 1
+      inverted: True
+      mode:
+        input: True
+        pullup: True

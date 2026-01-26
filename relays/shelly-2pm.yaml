@@ -13,8 +13,8 @@ esphome:
   friendly_name: '${friendly_name}'
   name_add_mac_suffix: true
   project:
-    name: "Sebastian Schmidt.Shelly 2PM"
-    version: "0.0.1"
+    name: "Sebastian Schmidt-Eichler.Shelly 2PM"
+    version: "1.0.0"
 
 esp32:
   board: esp32doit-devkit-v1
@@ -23,7 +23,9 @@ esp32:
 
 api:
   reboot_timeout: '${reboot_timeout}'
+
 ota:
+  - platform: esphome
 
 logger:
   baud_rate: 0
