@@ -126,6 +126,7 @@ switch:
 binary_sensor:
   - platform: gpio
     name: "Schalter"
+    id: switch_input
     pin: 10
     on_state_change: 
       if:
@@ -134,7 +135,13 @@ binary_sensor:
             api.connected:
               state_subscription_only: True
         then:
-          - switch.toggle: relay_switch
+          if:
+            condition:
+              binary_sensor.is_on: switch_input
+            then:
+              - switch.turn_on: relay_switch
+            else:
+              - switch.turn_off: relay_switch
 
     filters:
       - delayed_on_off: 50ms      
