@@ -11,7 +11,7 @@ esphome:
   friendly_name: "${friendly_name}"
   project:
     name: "Sebastian Schmidt-Eichler.Shelly 1 Mini Gen 3"
-    version: "0.1.0"
+    version: "0.1.1"
 
 dashboard_import:
   package_import_url: github://sebrauschmidt/device-templates/relays/shelly-1-mini-gen3.yaml
@@ -28,6 +28,12 @@ esp32:
 
 api:
   reboot_timeout: 0s
+  on_client_connected: 
+    then:
+      - switch.turn_on: relay_switch
+  on_client_disconnected: 
+    then:
+      - switch.turn_off: relay_switch
 
 ota:
   - platform: esphome
@@ -114,6 +120,7 @@ output:
 switch:
   - platform: output
     name: "Relais"
+    id: relay_switch
     output: relay
 
 binary_sensor:
@@ -123,10 +130,11 @@ binary_sensor:
     on_state_change: 
       if:
         condition:
-          api.connected:
-            state_subscription_only: True
+          not:
+            api.connected:
+              state_subscription_only: True
         then:
-          - 
+          - switch.toggle: relay_switch
 
     filters:
       - delayed_on_off: 50ms      
