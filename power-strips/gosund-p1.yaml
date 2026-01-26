@@ -4,8 +4,8 @@ substitutions:
     contact_1_name: 'Steckdose 1'
     contact_2_name: 'Steckdose 2'
     contact_3_name: 'Steckdose 3'
-    reboot_timeout: '15min' #Defines when the device reboots if no connection to its api was made, set 0s to disable auto reboot
-    contact_restore_mode: RESTORE_DEFAULT_OFF  #Defines if the contact restores from flash or the default state, see: https://esphome.io/components/switch/index.html
+    contact_restore_mode: RESTORE_DEFAULT_OFF
+    logger_level: ERROR  #Defines if the contact restores from flash or the default state, see: https://esphome.io/components/switch/index.html
 
 ##############################################
 # General Settings
@@ -23,11 +23,11 @@ esp8266:
   restore_from_flash: true
 
 api:
-  reboot_timeout: '${reboot_timeout}'
+  reboot_timeout: 0s
 ota:
   - platform: esphome
 logger:
-  baud_rate: 0
+  level: '${logger_level}'
 
 wifi:
   ap:

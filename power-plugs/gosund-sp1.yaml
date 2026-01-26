@@ -2,7 +2,7 @@ substitutions:
     name: "gosund-sp1"
     friendly_name: 'Gosund SP1'
     contact_name: 'Schalter'
-    reboot_timeout: '15min'
+    logger_level: ERROR
 
 ##############################################
 # General Settings
@@ -20,13 +20,13 @@ esp8266:
   restore_from_flash: true
 
 api:
-  reboot_timeout: '${reboot_timeout}'
+  reboot_timeout: 0s
 
 ota:
   - platform: esphome
 
 logger:
-  baud_rate: 0
+  level: '${logger_level}'
 
 wifi:
   ap:

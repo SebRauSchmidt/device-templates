@@ -3,7 +3,7 @@ substitutions:
   friendly_name: 'Shelly 2PM'
   contact_1_name: 'Kontakt 1'
   contact_2_name: 'Kontakt 2'
-  reboot_timeout: '15min'
+  logger_level: ERROR
 
 ##############################################
 # General Settings
@@ -22,13 +22,13 @@ esp32:
     type: arduino
 
 api:
-  reboot_timeout: '${reboot_timeout}'
+  reboot_timeout: 0s
 
 ota:
   - platform: esphome
 
 logger:
-  baud_rate: 0
+  level: '${logger_level}'
 
 wifi:
   ap:

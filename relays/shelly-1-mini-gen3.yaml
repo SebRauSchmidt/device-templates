@@ -1,6 +1,7 @@
 substitutions:
   name: "shelly-1-mini-g3"
   friendly_name: "Shelly 1 Mini Gen3"
+  logger_level: INFO
 
 ##########################################################
 # General settings                                       #
@@ -43,7 +44,7 @@ ota:
   - platform: esphome
 
 logger:
-  level: ERROR
+  level: '${logger_level}'
 
 wifi:
   ap: 
