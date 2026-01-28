@@ -29,9 +29,13 @@ esp32:
 
 api:
   reboot_timeout: 0s
-  on_client_connected: 
+  on_client_connected:
     then:
-      - switch.turn_on: relay_switch
+      if:
+        condition:
+          lambda: 'return id(mode_select).current_option() === "detached offline fallback";'
+        then:
+          - switch.turn_on: relay_switch
   on_client_disconnected: 
     then:
       if:
@@ -136,9 +140,13 @@ binary_sensor:
     on_state_change: 
       if:
         condition:
-          not:
-            api.connected:
-              state_subscription_only: True
+          or:
+            - and:
+              - not:
+                  api.connected:
+                    state_subscription_only: True
+              - lambda: 'return id(mode_select).current_option() === "detached offline fallback";'
+            - lambda: 'return id(mode_select).current_option() === "attached";'
         then:
           if:
             condition:
@@ -158,6 +166,18 @@ binary_sensor:
       mode:
         input: True
         pullup: True
+
+select:
+  - platform: template
+    name: "Switch Mode"
+    id: mode_select
+    optimistic: True
+    restore_value: True
+    options:
+      - attached
+      - detached
+      - detached offline fallback
+    entity_category: "config"
 
 status_led:
   pin:
