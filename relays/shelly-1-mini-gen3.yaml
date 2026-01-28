@@ -12,7 +12,7 @@ esphome:
   friendly_name: "${friendly_name}"
   project:
     name: "Sebastian Schmidt-Eichler.Shelly 1 Mini Gen 3"
-    version: "0.2.2"
+    version: "0.2.3"
 
 dashboard_import:
   package_import_url: github://sebrauschmidt/device-templates/relays/shelly-1-mini-gen3.yaml@main
@@ -105,6 +105,8 @@ text_sensor:
     hide_timestamp: True
     entity_category: "diagnostic"
   - platform: wifi_info
+    ip_address:
+      name: "IP-Adresse"
     mac_address: 
       name: "MAC-Adresse"
     power_save_mode:
