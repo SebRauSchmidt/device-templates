@@ -131,10 +131,11 @@ switch:
 
 binary_sensor:
   - platform: gpio
-    inverted: True
     name: "Schalter"
     id: switch_input
-    pin: 10
+    pin:
+      number: 10
+      inverted: True
     on_state_change: 
       if:
         condition:
