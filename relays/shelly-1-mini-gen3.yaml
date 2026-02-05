@@ -1,3 +1,4 @@
+---
 substitutions:
   name: "shelly-1-mini-g3"
   friendly_name: "Shelly 1 Mini Gen3"
@@ -7,7 +8,7 @@ substitutions:
 # General settings                                       #
 ##########################################################
 esphome:
-  name_add_mac_suffix: True
+  name_add_mac_suffix: true
   name: "${name}"
   friendly_name: "${friendly_name}"
   project:
@@ -21,10 +22,10 @@ dashboard_import:
 esp32:
   board: esp32-c3-devkitm-1
   flash_size: 8MB
-  framework: 
+  framework:
     type: esp-idf
     version: recommended
-    sdkconfig_options: 
+    sdkconfig_options:
       COMPILER_OPTIMIZATION_SIZE: y
 
 api:
@@ -33,14 +34,18 @@ api:
     then:
       if:
         condition:
-          lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+          and:
+            - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+            - switch.is_off: ota_mode
         then:
           - switch.turn_on: relay_switch
-  on_client_disconnected: 
+  on_client_disconnected:
     then:
       if:
         condition:
-          binary_sensor.is_off: switch_input
+          and:
+            - binary_sensor.is_off: switch_input
+            - switch.is_off: ota_mode
         then:
           - switch.turn_off: relay_switch
 
@@ -51,7 +56,7 @@ logger:
   level: '${logger_level}'
 
 wifi:
-  ap: 
+  ap:
     ssid: '${name}'
     manual_ip:
       static_ip: 192.168.4.1
@@ -59,10 +64,10 @@ wifi:
       subnet: 255.255.255.0
 
 captive_portal:
-  
+
 web_server:
   port: 80
-  include_internal: True
+  include_internal: true
   ota: False
   version: 3
 
@@ -77,7 +82,7 @@ sensor:
     unit_of_measurement: "°C"
     accuracy_decimals: 1
     icon: "mdi:thermometer"
-    calibration: 
+    calibration:
       b_constant: 3350
       reference_resistance: 10kOhm
       reference_temperature: 298.15K
@@ -102,12 +107,12 @@ sensor:
 text_sensor:
   - platform: version
     name: "Version"
-    hide_timestamp: True
+    hide_timestamp: true
     entity_category: "diagnostic"
   - platform: wifi_info
     ip_address:
       name: "IP-Adresse"
-    mac_address: 
+    mac_address:
       name: "MAC-Adresse"
     power_save_mode:
       name: "Energiesparmodus"
@@ -130,6 +135,10 @@ switch:
     name: "Relais"
     id: relay_switch
     output: relay
+  - platform: template
+    name: "OTA Modus"
+    id: ota_mode
+    optimistic: true
 
 binary_sensor:
   - platform: gpio
@@ -137,16 +146,17 @@ binary_sensor:
     id: switch_input
     pin:
       number: 10
-      inverted: True
-    on_state_change: 
+      inverted: true
+    on_state_change:
       if:
         condition:
           or:
             - and:
               - not:
                   api.connected:
-                    state_subscription_only: True
+                    state_subscription_only: true
               - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+              - switch.is_off: ota_mode
             - lambda: 'return id(mode_select).current_option() == "attached";'
         then:
           if:
@@ -161,19 +171,19 @@ binary_sensor:
       - delayed_on_off: 50ms
   - platform: gpio
     name: "Knopf"
-    pin: 
+    pin:
       number: 1
-      inverted: True
+      inverted: true
       mode:
-        input: True
-        pullup: True
+        input: true
+        pullup: true
 
 select:
   - platform: template
     name: "Switch Mode"
     id: mode_select
-    optimistic: True
-    restore_value: True
+    optimistic: true
+    restore_value: true
     options:
       - attached
       - detached
@@ -183,4 +193,4 @@ select:
 status_led:
   pin:
     number: 0
-    inverted: True
+    inverted: true
