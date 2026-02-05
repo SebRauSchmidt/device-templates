@@ -33,14 +33,18 @@ api:
     then:
       if:
         condition:
-          lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+          and:
+            - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+            - switch.is_off: ota_mode
         then:
           - switch.turn_on: relay_switch
   on_client_disconnected: 
     then:
       if:
         condition:
-          binary_sensor.is_off: switch_input
+          and:
+            - binary_sensor.is_off: switch_input
+            - switch.is_off: ota_mode
         then:
           - switch.turn_off: relay_switch
 
@@ -130,6 +134,10 @@ switch:
     name: "Relais"
     id: relay_switch
     output: relay
+  - platform: template
+    name: "OTA Modus"
+    id: ota_mode
+    optimistic: True
 
 binary_sensor:
   - platform: gpio
@@ -147,6 +155,7 @@ binary_sensor:
                   api.connected:
                     state_subscription_only: True
               - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+              - switch.is_off: ota_mode
             - lambda: 'return id(mode_select).current_option() == "attached";'
         then:
           if:
