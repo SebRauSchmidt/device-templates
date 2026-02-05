@@ -137,6 +137,7 @@ switch:
     name: "OTA Modus"
     id: ota_mode
     optimistic: true
+    entity_category: "config"
 
 binary_sensor:
   - platform: gpio
