@@ -13,7 +13,7 @@ esphome:
   friendly_name: "${friendly_name}"
   project:
     name: "Sebastian Schmidt-Eichler.Shelly 1 Mini Gen 3"
-    version: "0.2.3"
+    version: "0.2.4"
 
 dashboard_import:
   package_import_url: github://sebrauschmidt/device-templates/relays/shelly-1-mini-gen3.yaml@main
@@ -36,7 +36,6 @@ api:
         condition:
           and:
             - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
-            - switch.is_off: ota_mode
         then:
           - switch.turn_on: relay_switch
   on_client_disconnected:
