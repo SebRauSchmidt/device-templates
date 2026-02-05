@@ -34,8 +34,7 @@ api:
     then:
       if:
         condition:
-          and:
-            - lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
+            lambda: 'return id(mode_select).current_option() == "detached offline fallback";'
         then:
           - switch.turn_on: relay_switch
   on_client_disconnected:
